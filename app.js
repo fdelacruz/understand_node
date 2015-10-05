@@ -1,11 +1,22 @@
-var obj = {
-	name: 'John Doe',
-	greet: function () {
-		// console.log(`Hello  + ${this.name}`); // Template Literals
-		console.log('Hello ' + this.name);
-	}
+var EventEmitter = require('events');
+var Util = require('util');
+
+function Greetr() {
+	EventEmitter.call(this);
+	this.greeting = 'Hello World!';
+}
+
+Util.inherits(Greetr, EventEmitter); // Greetr.prototype = EventEmitter.prototype
+
+Greetr.prototype.greet = function (data) {
+	console.log(this.greeting + ': ' + data);
+	this.emit('greet', data);
 };
 
-obj.greet();
-obj.greet.call({ name: 'Jane Doe'}); // 'this' points to a different object
-obj.greet.apply({ name: 'Jane Doe'});
+var greeter1 = new Greetr();
+
+greeter1.on('greet', function (data) {
+	console.log('Someone greeted! ' + data);
+});
+
+greeter1.greet('Francisco');
